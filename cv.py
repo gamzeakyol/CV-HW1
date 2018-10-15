@@ -20,7 +20,8 @@ Last edited: August 2017
 """
 
 import sys
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QApplication, qApp
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QApplication, qApp, QLabel, QFileDialog
+from PyQt5.QtGui import QPixmap
 
 
 class Example(QMainWindow):
@@ -35,35 +36,48 @@ class Example(QMainWindow):
         
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('File')
-        
-        #impMenu1 = QMenu('Open Input', self)
-        #impMenu2 = QMenu('Open Target', self)
-        #impMenu3 = QMenu('Exit', self)
-        
-        #fileMenu.addMenu(impMenu1)
-        #fileMenu.addMenu(impMenu2)
-        #fileMenu.addMenu(impMenu3)
-        
-        
+              
         impAct1 = QAction('Open Input', self)
+        impAct1.triggered.connect(self.openImage) 
         impAct2 = QAction('Open Target', self)
+        impAct2.triggered.connect(self.openImage) 
         impAct3 = QAction('Exit', self)
-
+        impAct3.setShortcut('Ctrl+Q')
+        impAct3.triggered.connect(qApp.quit)      
+        
         fileMenu.addAction(impAct1)
         fileMenu.addAction(impAct2)
         fileMenu.addAction(impAct3)
 
         
         eqAct = QAction('Equalize Histogram', self)
-        eqAct.setShortcut('Ctrl+Q')
-        eqAct.triggered.connect(qApp.quit)
+        #eqAct.setShortcut('Ctrl+Q')
+        #eqAct.triggered.connect(qApp.quit)
         
         self.toolbar = self.addToolBar('Equalize Histogram')
         self.toolbar.addAction(eqAct)
+        
+        lbl1 = QLabel('Input', self)
+        lbl1.move(100, 50)
+        
+        lbl2 = QLabel('Target', self)
+        lbl2.move(700, 50)
+        
+        lbl3 = QLabel('Result', self)
+        lbl3.move(1300, 50)
+                     
 
         self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('Histogram Equalization')    
         self.show()
+        
+    def openImage(self):
+        imagePath, _ = QFileDialog.getOpenFileName()
+        pixmap = QPixmap(imagePath)
+        self.label.setPixmap(pixmap)
+        self.resize(pixmap.size())
+        self.adjustSize()
+        
         
         
         
