@@ -14,10 +14,7 @@ import cv2
 from histogram import histogram, histogram_match, cdf, lookup_table
 
 
-##########################################
-## Do not forget to delete "return NotImplementedError"
-## while implementing a function
-########################################
+
 
 class App(QMainWindow):
 
@@ -90,7 +87,6 @@ class App(QMainWindow):
     def openInputImage(self):
         # This function is called when the user clicks File->Input Image.
 
-        # The image
         #The QLabel where we can display an Image
         self.label = QLabel(self)
         self.boxLayout = QVBoxLayout(self.groupBox1)
@@ -267,7 +263,6 @@ class App(QMainWindow):
     def quitProgram(self):
 
         return QApplication.exit(0)
-
 
 
 
