@@ -9,7 +9,6 @@ from PyQt5.QtCore import Qt
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import numpy as np
-import random
 import cv2
 
 from histogram import histogram, histogram_match, cdf, lookup_table
@@ -192,15 +191,16 @@ class App(QMainWindow):
             QMessageBox.about(self, "Error", "Load target image")
 
         else:
+
             self.label3 = QLabel(self)
             self.boxLayout3 = QVBoxLayout(self.groupBox3)
             self.boxLayout3.addWidget(self.label3)
 
-            self.label3.setAlignment(Qt.AlignCenter)
 
             # The image
             self.image1 = cv2.imread(self.imagePath)
             self.image2 = cv2.imread(self.imagePath2)
+
 
             self.h1 = histogram(self.image1)
             self.h2 = histogram(self.image2)
@@ -222,19 +222,44 @@ class App(QMainWindow):
             out_im1 = histogram_match(LUT1, self.image1, 1)
             out_im2 = histogram_match(LUT2, self.image1, 2)
 
-            self.out_im = np.dstack((out_im0, out_im1, out_im2))
-            self.out_im = np.divide(self.out_im, 255)
 
+            self.out_im = np.dstack((out_im0, out_im1, out_im2))
+
+            self.hist3 = histogram(self.out_im)
+
+            self.out_im = np.divide(self.out_im, 255)
 
             self.output_image = self.out_im[..., ::-1]
 
-            self.output_image = np.array(self.output_image)
+            plt.imsave("outputt.png", self.output_image)
 
-            self.output_image = QImage(self.output_image.data, self.output_image.shape[1], self.output_image.shape[0], self.output_image.strides[0], QImage.Format_RGB32)
 
-            self.pixmap3 = QPixmap.fromImage(self.output_image)
-            self.pixmap3 = QPixmap(self.pixmap3)
+            self.pixmap3 = QPixmap("outputt.png")
             self.label3.setPixmap(self.pixmap3)
+
+
+            # Histogram of image
+            self.canvas6 = FigureCanvas(Figure(figsize=(5, 3)))
+            self.canvas7 = FigureCanvas(Figure(figsize=(5, 3)))
+            self.canvas8 = FigureCanvas(Figure(figsize=(5, 3)))
+
+            self.boxLayout3.addWidget(self.canvas6)
+            self.boxLayout3.addWidget(self.canvas7)
+            self.boxLayout3.addWidget(self.canvas8)
+
+            self.canvas6_plot = self.canvas6.figure.subplots()
+            self.canvas6_plot.axes.bar(range(0, 256), self.hist3[:, 2], color="red")
+            self.canvas6.draw()
+
+            self.canvas7_plot = self.canvas7.figure.subplots()
+            self.canvas7_plot.axes.bar(range(0, 256), self.hist3[:, 1], color="green")
+            self.canvas7.draw()
+
+            self.canvas8_plot = self.canvas8.figure.subplots()
+            self.canvas8_plot.axes.bar(range(0, 256), self.hist3[:, 0], color="blue")
+            self.canvas8.draw()
+
+            self.label3.setAlignment(Qt.AlignCenter)
 
             self.label3.show()
 
