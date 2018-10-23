@@ -11,8 +11,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
-
+#Creating histograms of images
 def histogram(I):
+
     I = np.array(I)
 
     hist = np.zeros([256, 3])  # range through the intensity values
@@ -22,8 +23,9 @@ def histogram(I):
 
     return hist
 
-
+#Creating cumulative distributions
 def cdf(histogram):
+
     cumdf = np.zeros_like(histogram)
 
     cumdf[0] = histogram[0]
@@ -36,8 +38,8 @@ def cdf(histogram):
     return cumdf
 
 
+#Creating lookup table
 def lookup_table(pi, pj):
-
 
     LUT = np.arange(256)
 
@@ -52,9 +54,8 @@ def lookup_table(pi, pj):
     return LUT
 
 
+#Histogram matching method
 def histogram_match(lut, img, ch):
-    print("image type")
-    print(img.dtype)
 
     R, C, B = np.shape(img)
 
@@ -62,13 +63,14 @@ def histogram_match(lut, img, ch):
 
     for i in range(R):
         for j in range(C):
-            output_im[i,j] = lut[image[i, j, ch]]
+            output_im[i,j] = lut[img[i, j, ch]]
 
     return output_im
 
 
-image = cv2.imread("color1.png")
-image2 = cv2.imread("color2.png")
+#The code below is written for trying the methods
+image = cv2.imread("color2.png")
+image2 = cv2.imread("color1.png")
 
 h1 = histogram(image)
 h2 = histogram(image2)
@@ -93,28 +95,24 @@ out_im2 = histogram_match(LUT2, image, 2)
 
 
 out_im = np.dstack((out_im0, out_im1, out_im2))
+output_hist = histogram(out_im)
+
 out_im = np.divide(out_im, 255)
 
 
 plt.figure()
 
-#plt.bar(x=range(0, 256), height=c2_0[:])
-#plt.bar(x=range(0,256), height=h1[:,0])
-#plt.bar(x=range(0, 256), height=LUT0[:])
-#plt.bar(x=range(0, 256), height=output[:])
-
+#plt.bar(x=range(0,256), height=output_hist[:,0])
+#plt.bar(x=range(0,256), height=output_hist[:,1])
+#plt.bar(x=range(0,256), height=output_hist[:,2])
 
 rgb = out_im[...,::-1]
 plt.imshow(rgb)
 
 plt.show()
 
+#plt.imsave("outputt.png", rgb)
 
-'''hist_output = histogram(rgb)
-print(hist_output)
-plt.figure()
 
-plt.bar(x=range(0,256), height=hist_output[:,0])
 
-plt.show()'''
 
